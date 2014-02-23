@@ -11,12 +11,8 @@ div.row-fluid
       $(document).ready( function(){
         resize();
 
-        var opts = {
-          center: new google.maps.LatLng(37.062482, -95.677139),
-          zoom: 4,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        map = new google.maps.Map( document.getElementById("map"), opts );
+        map = L.mapbox.map('map', 'pzula.h69mf89n')
+        .setView([37.9,  -95.677139], 4);
 
         var markers = [];
 
@@ -33,23 +29,27 @@ div.row-fluid
           var positions_array = positions_hash['positions'];
           for (var i = 0; i < positions_array.length; i++) {
             var position = positions_array[i];
-            var coord = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            var marker = new google.maps.Marker(
-              {
-                position: coord,
-                map: map,
-                title: "Client!"
-              });
-            marker.setMap(map);
+           
+            L.mapbox.featureLayer({
+              type: 'Feature',
+              geometry: {
+                  type: 'Point',
+                  coordinates: [position.coords.longitude, position.coords.latitude]
+              },
+              properties: {
+                  title: 'A Station Searcher',
+                  description: 'Searching...searching...',
+                  'marker-size': 'large',
+                  'marker-color': '#f0a'
+              }
+          }).addTo(map);
             markers.push(marker);
           }
         })
       });
 
   div.span3
-    form(id='control', onSubmit="add(); return false;")
+    form(id='control')
       h1 Admin
       p
         | The FreshFinder Admin lets you track where people are searching for markets and what they are saying
-
-      h2 Reviews
