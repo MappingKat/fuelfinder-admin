@@ -13,6 +13,12 @@ div.row-fluid
 
         map = L.mapbox.map('map', 'pzula.h69mf89n')
         .setView([37.9,  -95.677139], 4);
+        map.dragging.enable();
+        map.touchZoom.disable();
+        map.doubleClickZoom.enable();
+        map.scrollWheelZoom.disable();
+        // disable tap handler, if present.
+        if (map.tap) map.tap.disable();
 
         var markers = [];
 
