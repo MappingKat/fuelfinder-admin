@@ -44,44 +44,11 @@ html(lang="en")
         div.container-fluid
           a.brand(href='/')
             img(src='/images/fuel-logo.png', width='30px', height='30px')
-          //- div.nav-collapse
-          //-   ul.nav
-          //-     li.active
-          //-       a(href='/')
-          //-         i.icon-home.icon-white
-          //-         |  Home
-          //-     li
-          //-       a(href='/about')
-          //-         i.icon-file.icon-white
-          //-         |  About
-          //-     li
-          //-       a(href='/contact')
-          //-         i.icon-envelope.icon-white
-          //-         |  Contact
-          //
-            form.navbar-form.form-inline.pull-right
-              input(type='text', placeholder='Email').input-medium
-              input(type='password', placeholder='Password').input-small
-              button(type='submit').btn.btn-primary
-                | Sign in
-
+          div.nav-logo
+            h2 FuelFinder Admin
     div.container-fluid
       !=body
 
-    //
-      div.navbar.navbar-fixed-bottom
-          div.navbar-inner
-            div.container-fluid
-              form.navbar-form.form-inline.pull-right
-                input(type='text', placeholder='Email').input-medium.runaround
-                input(type='password', placeholder='Password').input-small.runaround
-                label.checkbox.runaround
-                  input(type='checkbox')
-                  span.help-inline Remember me
-                button(type='submit').btn.btn-primary.runaround
-                  | Sign in
-
-  // Le javascript
   script(src="http://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.js").
   script(src='javascripts/map.js').
     
