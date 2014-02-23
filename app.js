@@ -1,13 +1,8 @@
-/**
- * settings
- */
+/* settings */
 
  var webPort = 9999;
 
-/**
- * Module dependencies.
- */
-
+/* Module dependencies. */
  var express = require('express'),
  io = require('socket.io');
 
@@ -15,7 +10,6 @@
  io = io.listen(app);
 
 // Configuration
-
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
@@ -35,7 +29,7 @@ app.configure('production', function(){
 
 // Routes
 
-app.get('/', function(req, res) {
+app.get('/admin', function(req, res) {
 	res.render('index');
 });
 
@@ -104,5 +98,4 @@ io.sockets.on('connection', function (socket) {
       }
     });
   });
-
 });

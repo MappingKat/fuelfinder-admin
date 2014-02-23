@@ -15,6 +15,7 @@ html(lang="en")
     meta(http-equiv='cleartype', content='on')
 
     // Le styles
+    link(rel='stylesheet', type='text/css', href='http://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.css')
     link(rel='stylesheet', type='text/css', href='/stylesheets/bootstrap.css')
     style.
       body {
@@ -42,7 +43,7 @@ html(lang="en")
       div.navbar-inner
         div.container-fluid
           a.brand(href='/')
-            img(src='/images/eyezo-logo.png', width='76', height='25')
+            img(src='/images/fuel-logo.png', width='30px', height='30px')
           //- div.nav-collapse
           //-   ul.nav
           //-     li.active
@@ -81,22 +82,6 @@ html(lang="en")
                   | Sign in
 
   // Le javascript
-  script(src='/socket.io/socket.io.js').
-  // script(src='http://maps.googleapis.com/maps/api/js?sensor=false').
-  script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAroXRhKjnYenCDv858IxoiUw7HEVz8YbY&sensor=false').
-  script(type='text/javascript').
-    var header_height = 60;
-    var footer_height = 15;
-    var map_height_min = 350;
-
-    google.maps.visualRefresh = true;
-
-    function resize() {
-      var non_map_content_height = header_height + footer_height;
-      var map_height = map_height_min;
-      var difference = $(window).height( ) - non_map_content_height;
-      if ( difference > map_height )
-        map_height = difference;
-
-      $("#map").css( 'height', map_height );
-    }
+  script(src="http://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.js").
+  script(src='javascripts/map.js').
+    
