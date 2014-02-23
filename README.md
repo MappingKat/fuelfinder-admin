@@ -1,23 +1,18 @@
-Admin FreshFinder 
+Admin FuelFinder
 ===========
 
-View searchs from FreshFinder users on a Google Map with real-time updating.  
-
+View searchs from Fuelfinder users on a map with real-time updating.  Uses socket.io to talk to the rails app fuelfinder. 
 
 Requires
 ----------------
 * node
-* redis
 
 Setup
 ---------------
 ```sh
-cd dashboard-admin/
+cd fuelfinder-admin/
 npm install
 ```
-
-Add your Google Maps API key on line 89 of views/layout.jade where it says "YOUR_API_KEY". [Generate your Google Maps Key]
-(https://developers.google.com/maps/documentation/javascript/tutorial#api_key)
 
 Quick Start
 --------------------------------------------------------
@@ -28,5 +23,5 @@ node app
 
 Navigate to:
 ```
-http://localhost:8070/
+http://localhost:9999/
 ```
