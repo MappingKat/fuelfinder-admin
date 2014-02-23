@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title EyeZo: Share Location
+    title FuelFinder: Find Alternative Fuel Stations
 
     meta(charset='utf-8')
     meta(name='description', content='EyeZo.com gives you a short URL for any location on Earth.')
@@ -15,6 +15,7 @@ html(lang="en")
     meta(http-equiv='cleartype', content='on')
 
     // Le styles
+    link(rel='stylesheet', type='text/css', href='http://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.css')
     link(rel='stylesheet', type='text/css', href='/stylesheets/bootstrap.css')
     style.
       body {
@@ -35,72 +36,19 @@ html(lang="en")
 
     script(src='/javascripts/jquery.js').
     script(src='/javascripts/bootstrap.js').
+    script(src='//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js').
 
   body
     div.navbar.navbar-fixed-top.navbar-inverse
       div.navbar-inner
         div.container-fluid
-          a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
           a.brand(href='/')
-            img(src='/images/eyezo-logo.png', width='76', height='25')
-          div.nav-collapse
-            ul.nav
-              li.active
-                a(href='/')
-                  i.icon-home.icon-white
-                  |  Home
-              li
-                a(href='/about')
-                  i.icon-file.icon-white
-                  |  About
-              li
-                a(href='/contact')
-                  i.icon-envelope.icon-white
-                  |  Contact
-          //
-            form.navbar-form.form-inline.pull-right
-              input(type='text', placeholder='Email').input-medium
-              input(type='password', placeholder='Password').input-small
-              button(type='submit').btn.btn-primary
-                | Sign in
-
+            img(src='/images/fuel-logo.png', width='30px', height='30px')
+          div.nav-logo
+            h2 FuelFinder Admin
     div.container-fluid
       !=body
 
-    //
-      div.navbar.navbar-fixed-bottom
-          div.navbar-inner
-            div.container-fluid
-              form.navbar-form.form-inline.pull-right
-                input(type='text', placeholder='Email').input-medium.runaround
-                input(type='password', placeholder='Password').input-small.runaround
-                label.checkbox.runaround
-                  input(type='checkbox')
-                  span.help-inline Remember me
-                button(type='submit').btn.btn-primary.runaround
-                  | Sign in
-
-  // Le javascript
-  script(src='/socket.io/socket.io.js').
-  // script(src='http://maps.googleapis.com/maps/api/js?sensor=false').
-  script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAroXRhKjnYenCDv858IxoiUw7HEVz8YbY&sensor=false').
-  script(src='/javascripts/eyezo.js').
-  script(type='text/javascript').
-    var header_height = 60;
-    var footer_height = 15;
-    var map_height_min = 350;
-
-    google.maps.visualRefresh = true;
-
-    function resize() {
-      var non_map_content_height = header_height + footer_height;
-      var map_height = map_height_min;
-      var difference = $(window).height( ) - non_map_content_height;
-      if ( difference > map_height )
-        map_height = difference;
-
-      $("#map").css( 'height', map_height );
-    }
+  script(src="http://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.js").
+  script(src='javascripts/map.js').
+    
