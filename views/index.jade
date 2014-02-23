@@ -18,65 +18,33 @@ div.row-fluid
         };
         map = new google.maps.Map( document.getElementById("map"), opts );
 
-        socket.event.subs.begin = function(data){
-          $('#centerList tr').remove();
-          $('#centerList')
-            .append( $('<tr>')
-              .append( $('<td>')
-                .append( $('<label>')
-                  .attr( 'class', 'radio' )
-                  .append( $('<input>')
-                    .attr( 'type', 'radio' )
-                    .attr( 'name', 'centerOn' )
-                    .attr( 'value', 'none' )
-                    .attr( 'checked', true ) )
-                  .append( ' None' ) ) ) );
+        var markers = [];
 
-          $('input:radio[name=centerOn]').last().change(function(){
-            centerOn = -1;
-          });
-        }
-
-        socket.event.subs.each = function(data){
-          $('#centerList')
-            .append( $('<tr>')
-              .append( $('<td>')
-                .append( $('<label>')
-                  .attr( 'class', 'radio' )
-                  .append( $('<input>')
-                    .attr( 'type', 'radio' )
-                    .attr( 'name', 'centerOn' )
-                    .attr( 'value', data ) )
-                  .append( ' '+data )
-                  .append( $('<a>')
-                    .attr( 'href', '#' )
-                    .attr( 'onClick', 'socket.emit("unsub","'+data+'");socket.emit("subs");' )
-                    .append( '&times;' )
-                      .attr( 'class', 'close' ) ) ) ) ); //'btn btn-danger pull-right' ) ) ) ) );
-
-          $('input:radio[name=centerOn]').last().change(function(){
-              centerOn = $('input:radio[name=centerOn]:checked').val();
-          });
-          if (centerOn == data)
-            $('input:radio[name=centerOn]').last().attr('checked',true);
-        }
-
-        socket.event.data.each = function(key,marker,polyline,info){
-          if (key == centerOn)
-            map.panTo(marker.getPosition());
-        }
-
-        socket.emit('sub', 'ISS');
-        socket.emit('subs');
-
+        var socket = io.connect('http://localhost:9999');
+        socket.emit('watching');
+        socket.on('positions', function(positions_hash) {
+          console.log('We got positions!');
+          // Remove all the existing markers
+          for (var i = 0; i < markers.length; i++){
+            var marker = markers[i];
+            marker.setMap(null);
+            delete marker[i];
+          }
+          var positions_array = positions_hash['positions'];
+          for (var i = 0; i < positions_array.length; i++) {
+            var position = positions_array[i];
+            var coord = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var marker = new google.maps.Marker(
+              {
+                position: coord,
+                map: map,
+                title: "Client!"
+              });
+            marker.setMap(map);
+            markers.push(marker);
+          }
+        })
       });
-
-      function add( data ) {
-        socket.emit('sub',$('#control input[name=channel]').val());
-        $('#control input[name=channel]').val('');
-        socket.emit('subs');
-
-      }
 
   div.span3
     form(id='control', onSubmit="add(); return false;")
@@ -84,6 +52,4 @@ div.row-fluid
       p
         | The FreshFinder Admin lets you track where people are searching for markets and what they are saying
 
-      h3 Center On
-      table.table.table-condensed
-        tbody#centerList
+      h2 Reviews

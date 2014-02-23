@@ -2,19 +2,17 @@
  * settings
  */
 
-var webPort = 8070;
+ var webPort = 9999;
 
 /**
  * Module dependencies.
  */
 
-var express = require('express'),
-    routes = require('./routes'),
-    io = require('socket.io'),
-    redis = require('redis');
+ var express = require('express'),
+ io = require('socket.io');
 
-var app = module.exports = express.createServer(),
-    io = io.listen(app);
+ var app = module.exports = express.createServer(),
+ io = io.listen(app);
 
 // Configuration
 
@@ -39,78 +37,72 @@ app.configure('production', function(){
 
 app.get('/', function(req, res) {
 	res.render('index');
-    });
-app.get(/^\/(\w{2,8})$/, function(req, res) { // match two to eight character URLs as group keys
-	var key = req.params[0];
-	res.render('group', {key: key});
-    });
-app.post('/points.json', routes.points);
+});
 
 app.listen(webPort);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+
+var clients = {};
+var watchers = {};
+var positions = [];
+
+function collect_positions() {
+  console.log("Collecting positions");
+  positions = [];
+  for (var property in clients) {
+    console.log("We have a client here...");
+    client_socket = clients[property];
+    client_socket.get('position', function(err, position){
+      console.log("Just collected a position");
+      positions.push(position);
+      send_positions();
+    });
+  }
+  // If there are no clients, we still want to send the updated, empty positions to the watchers.
+  if (Object.keys(clients).length == 0) {
+    send_positions();
+  }
+}
+
+function send_positions() {
+  console.log("Sending positions");
+  for (var property in watchers) {
+    var socket = watchers[property];
+    socket.emit('positions', {positions: positions})
+  }
+}
 
 // socket.io
 io.sockets.on('connection', function (socket) {
 	console.log('Connection: ' + socket.id);
 
-	var rc = redis.createClient();
-	var keys = new Array();
-	var limit = 10;
+	socket.on('position', function(position_hash) {
+    console.log(position_hash);
+    socket.set('position', position_hash['position']);
+    clients[socket.id] = socket;
+    collect_positions();
+  });
 
-	socket.on('sub', function(key) {
-		// enforce alphanumeric keys
-		if (typeof key === 'string') {
-		    var rx = new RegExp(/\W/);
-		    var a = key.match(rx);
-		    if (a == null && key != '') {
-			if (keys.indexOf(key) < 0) {
-			    if (keys.push(key) > limit)
-				rc.unsubscribe('feed.'+keys.pop());
-			    rc.subscribe('feed.'+key);
-			}
-			console.log('sub: '+key+' ('+keys.length+' subscriptions: '+keys+')');
-		    }
-		    else
-			console.log('ERROR: illegal subscription '+key);
-		}
-		else
-		    console.log('ERROR: illegal subscription '+key);
+  socket.on('watching', function() {
+    console.log("New watcher");
+    watchers[socket.id] = socket;
+    collect_positions();
+  });
 
-	    });
-
-	socket.on('unsub', function(key) {
-		var i = keys.indexOf(key);
-		if (i > -1) {
-		    var rest = keys.slice(i + 1 || keys.length);
-		    keys.length = i < 0 ? keys.length + i : i;
-		    keys.push.apply(keys, rest);
-		    rc.unsubscribe('feed.'+key);
-
-		}
-		console.log('unsub: ' + key + ' (' + keys.length + ' subscriptions: ' + keys + ')');
-
-	    });
-
-	socket.on('subs', function(key) {
-		socket.emit('subs', keys);
-		console.log('subs: ' + keys +'');
-
-	    });
-
-	socket.on('disconnect', function () {
-		console.log('disconnect');
-		rc.end();
-
-	    });
-
-	rc.on('message', function(key, data) {
-		var o = JSON.parse(data);
-		console.log('rc.on(data): ' + JSON.stringify(o));
-		socket.volatile.emit('data', o);
-	    });
-
-	rc.on( 'error', function(err) {
-		console.log('Redis Error: ' + err );
-
-	    });
+  socket.on('disconnect', function () {
+    console.log('Disconnect:' + socket.id);
+    socket.get('position', function(err, position){
+      //TODO: Make sure this doesn't die for the admin since they don't have a location.
+      if (err === null ) {
+        console.log("Removing the client's position");
+        delete clients[socket.id];
+        collect_positions();
+      } else {
+        if (watchers[socket.id] != undefined) {
+          delete watchers[socket.id];
+        }
+      }
     });
+  });
+
+});
