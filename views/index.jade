@@ -22,7 +22,7 @@ div.row-fluid
 
         var markers = [];
 
-        var socket = io.connect('http://localhost:9999');
+        var socket = io.connect('http://fuelfinder-admin.herokuapp.com');
         socket.emit('watching');
         socket.on('positions', function(positions_hash) {
           console.log('We got positions!');

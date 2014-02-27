@@ -29,7 +29,7 @@ app.configure('production', function(){
 
 // Routes
 
-app.get('/admin', function(req, res) {
+app.get('/', function(req, res) {
 	res.render('index');
 });
 
