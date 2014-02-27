@@ -1,11 +1,11 @@
 {
-    "name": "fuelfinder-admin"
-  , "version": "0.0.2"
-  , "private": false
-  , "dependencies": {
-      "express": "2.5.8"
-    , "jade": ">= 0.0.1"
+    "name": "fuelfinder-admin",
+     "version": "0.0.2",
+      "private": false,
+     "dependencies": {
+      "express": "2.5.8",
+       "jade": ">= 0.0.1"
     },
 "bundledDependencies": {
   "socket.io": "*"
-},
+}
